@@ -1,0 +1,73 @@
+-- Criação da tabela "Clientes"
+CREATE TABLE Clientes (
+  ID INT PRIMARY KEY,
+  Nome VARCHAR(100),
+  Email VARCHAR(100),
+  Telefone VARCHAR(20),
+  Endereco VARCHAR(200)
+);
+
+-- Criação da tabela "Pedidos"
+CREATE TABLE Pedidos (
+  ID INT PRIMARY KEY,
+  ClienteID INT,
+  DataPedido DATE,
+  Total DECIMAL(10, 2),
+  FOREIGN KEY (ClienteID) REFERENCES Clientes(ID)
+);
+
+-- Criação da tabela "Produtos"
+CREATE TABLE Produtos (
+  ID INT PRIMARY KEY,
+  Nome VARCHAR(100),
+  Preco DECIMAL(10, 2)
+);
+
+-- Criação da tabela "ItensPedido"
+CREATE TABLE ItensPedido (
+  ID INT PRIMARY KEY,
+  PedidoID INT,
+  ProdutoID INT,
+  Quantidade INT,
+  FOREIGN KEY (PedidoID) REFERENCES Pedidos(ID),
+  FOREIGN KEY (ProdutoID) REFERENCES Produtos(ID)
+);
+
+-- Inserção de dados de exemplo na tabela "Clientes"
+INSERT INTO Clientes (ID, Nome, Email, Telefone, Endereco)
+VALUES
+  (1, 'João Silva', 'joao@example.com', '999999999', 'Rua A, 123'),
+  (2, 'Maria Santos', 'maria@example.com', '888888888', 'Avenida B, 456');
+
+-- Inserção de dados de exemplo na tabela "Produtos"
+INSERT INTO Produtos (ID, Nome, Preco)
+VALUES
+  (1, 'Camiseta', 29.99),
+  (2, 'Calça Jeans', 59.99),
+  (3, 'Tênis', 79.99);
+
+-- Inserção de dados de exemplo na tabela "Pedidos"
+INSERT INTO Pedidos (ID, ClienteID, DataPedido, Total)
+VALUES
+  (1, 1, '2023-06-01', 59.98),
+  (2, 2, '2023-06-02', 109.98);
+
+-- Inserção de dados de exemplo na tabela "ItensPedido"
+INSERT INTO ItensPedido (ID, PedidoID, ProdutoID, Quantidade)
+VALUES
+  (1, 1, 1, 2),
+  (2, 1, 2, 1),
+  (3, 2, 2, 2),
+  (4, 2, 3, 1);
+
+-- Consulta para obter os pedidos realizados por um cliente específico
+SELECT Pedidos.ID, Clientes.Nome, Pedidos.DataPedido, Pedidos.Total
+FROM Pedidos
+INNER JOIN Clientes ON Pedidos.ClienteID = Clientes.ID
+WHERE Clientes.ID = 1;
+
+-- Consulta para obter os produtos de um pedido específico
+SELECT ItensPedido.ID, Produtos.Nome, ItensPedido.Quantidade
+FROM ItensPedido
+INNER JOIN Produtos ON ItensPedido.ProdutoID = Produtos.ID
+WHERE ItensPedido.PedidoID = 1;
